@@ -97,7 +97,7 @@ func sendMsgToAdmins(text string, WebsiteID string, SessionID string) {
 func init() {
 	config = utils.GetConfig()
 	
-	chat_prefix = config.GetString("prefix")
+	var chat_prefix = config.GetString("prefix")
 
 	log.Printf("Initializing Redis...")
 
