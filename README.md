@@ -44,6 +44,7 @@ telegram:
   key: 
 admins:
   - 93847124
+prefix: "Crisp chat 1"
 ```
 
 ## License

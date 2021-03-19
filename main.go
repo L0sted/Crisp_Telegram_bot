@@ -96,6 +96,8 @@ func sendMsgToAdmins(text string, WebsiteID string, SessionID string) {
 
 func init() {
 	config = utils.GetConfig()
+	
+	chat_prefix = config.GetString("prefix")
 
 	log.Printf("Initializing Redis...")
 
@@ -144,19 +146,19 @@ func init() {
 
 			// Register handler on 'message:send/text' namespace
 			reg.On("message:send/text", func(evt crisp.EventsReceiveTextMessage) {
-				text := fmt.Sprintf(`*%s(%s): *%s`, *evt.User.Nickname, *evt.User.UserID, *evt.Content)
+				text := fmt.Sprintf(`(%s) *%s(%s): *%s`, chat_prefix, *evt.User.Nickname, *evt.User.UserID, *evt.Content)
 				sendMsgToAdmins(text, *evt.WebsiteID, *evt.SessionID)
 			})
 
 			// Register handler on 'message:send/file' namespace
 			reg.On("message:send/file", func(evt crisp.EventsReceiveFileMessage) {
-				text := fmt.Sprintf(`*%s(%s): *[File](%s)`, *evt.User.Nickname, *evt.User.UserID, evt.Content.URL)
+				text := fmt.Sprintf(`(%s) *%s(%s): *[File](%s)`, chat_prefix, *evt.User.Nickname, *evt.User.UserID, evt.Content.URL)
 				sendMsgToAdmins(text, *evt.WebsiteID, *evt.SessionID)
 			})
 
 			// Register handler on 'message:send/animation' namespace
 			reg.On("message:send/animation", func(evt crisp.EventsReceiveAnimationMessage) {
-				text := fmt.Sprintf(`*%s(%s): *[Animation](%s)`, *evt.User.Nickname, *evt.User.UserID, evt.Content.URL)
+				text := fmt.Sprintf(`(%s) *%s(%s): *[Animation](%s)`, chat_prefix, *evt.User.Nickname, *evt.User.UserID, evt.Content.URL)
 				sendMsgToAdmins(text, *evt.WebsiteID, *evt.SessionID)
 			})
 		},
@@ -195,7 +197,7 @@ func main() {
 		}
 
 		if contains(config.Get("admins").([]interface{}), int64(update.Message.From.ID)) {
-			replyToUser(&update)
+			// replyToUser(&update)
 		}
 	}
 }
