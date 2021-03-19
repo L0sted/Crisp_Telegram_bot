@@ -11,7 +11,7 @@ import (
 	"github.com/go-redis/redis"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/spf13/viper"
-	"github.com/tonyzzzzzz/Crisp_Telegram_bot/utils"
+	"github.com/l0sted/Crisp_Telegram_bot/utils"
 )
 
 var bot *tgbotapi.BotAPI
