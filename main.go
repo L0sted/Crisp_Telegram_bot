@@ -43,7 +43,7 @@ func contains(s []interface{}, e int64) bool {
 	}
 	return false
 }
-
+//from tg to crisp
 func replyToUser(update *tgbotapi.Update) {
 	if update.Message.ReplyToMessage == nil {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "请回复一个消息")
@@ -80,7 +80,7 @@ func replyToUser(update *tgbotapi.Update) {
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "回复成功！")
 	bot.Send(msg)
 }
-
+//from crisp to tg
 func sendMsgToAdmins(text string, WebsiteID string, SessionID string) {
 	for _, id := range config.Get("admins").([]interface{}) {
 		msg := tgbotapi.NewMessage(int64(id.(int)), text)
