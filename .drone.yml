@@ -13,6 +13,7 @@ steps:
       - docker build .
 
 name: Deployment
+steps:
   - name: run
     commands:
       - docker-compose up --build -d
