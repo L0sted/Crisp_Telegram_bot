@@ -8,11 +8,11 @@ platform:
 steps:
   - name: build
     commands:
-      - docker-compose build
+      - docker-compose -p Crisp_Telegram_bot build
 
   - name: run
     commands:
-      - docker-compose up -d
+      - docker-compose -p Crisp_Telegram_bot up -d
     when:
       status:
         - success
