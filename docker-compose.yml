@@ -1,0 +1,10 @@
+version: '3'
+services:
+  crispbot:
+    build: .
+    volumes:
+     - /root/config.yml:/app/config.yml
+    depends_on:
+     - db
+  db:
+    image: redis
