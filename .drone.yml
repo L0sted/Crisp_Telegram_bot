@@ -1,7 +1,7 @@
 
 kind: pipeline
 type: exec
-name: default
+name: Build
 
 platform:
   os: linux
@@ -11,6 +11,8 @@ steps:
   - name: build
     commands:
       - docker build .
+
+name: Deployment
   - name: run
     commands:
       - docker-compose up --build -d
