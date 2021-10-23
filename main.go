@@ -35,55 +35,6 @@ func (s *CrispMessageInfo) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, s)
 }
 
-/*
-func contains(s []interface{}, e int64) bool {
-	for _, a := range s {
-		if int64(a.(int)) == e {
-			return true
-		}
-	}
-	return false
-}
-*/
-/*
-//from tg to crisp
-func replyToUser(update *tgbotapi.Update) {
-	if update.Message.ReplyToMessage == nil {
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "请回复一个消息")
-		bot.Send(msg)
-		return
-	}
-
-	// res, err := redisClient.Get(strconv.Itoa(update.Message.ReplyToMessage.MessageID)).Result()
-
-	if err != nil {
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "ERROR: "+err.Error())
-		bot.Send(msg)
-		return
-	}
-
-	var msgInfo CrispMessageInfo
-	err = json.Unmarshal([]byte(res), &msgInfo)
-
-	if err := json.Unmarshal([]byte(res), &msgInfo); err != nil {
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "ERROR: "+err.Error())
-		bot.Send(msg)
-		return
-	}
-
-	if update.Message.Text != "" {
-		client.Website.SendTextMessageInConversation(msgInfo.WebsiteID, msgInfo.SessionID, crisp.ConversationTextMessageNew{
-			Type:    "text",
-			From:    "operator",
-			Origin:  "chat",
-			Content: update.Message.Text,
-		})
-	}
-
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "回复成功！")
-	bot.Send(msg)
-}
-*/
 //from crisp to tg
 func sendMsgToAdmins(text string, WebsiteID string, SessionID string) {
 	for _, id := range config.Get("admins").([]interface{}) {
@@ -91,12 +42,6 @@ func sendMsgToAdmins(text string, WebsiteID string, SessionID string) {
 		msg.ParseMode = "Markdown"
 		sent, _ := bot.Send(msg)
 		log.Println(strconv.Itoa(sent.MessageID))
-		/*
-			redisClient.Set(strconv.Itoa(sent.MessageID), &CrispMessageInfo{
-				WebsiteID,
-				SessionID,
-			}, 12*time.Hour)
-		*/
 	}
 }
 
@@ -105,21 +50,6 @@ func main() {
 
 	var chat_prefix = config.GetString("prefix")
 
-	log.Printf("Initializing Redis...")
-	/*
-		redisClient = redis.NewClient(&redis.Options{
-			Addr:     config.GetString("redis.host"),
-			Password: config.GetString("redis.password"),
-			DB:       config.GetInt("redis.db"),
-		})
-
-		var err error
-
-		_, err = redisClient.Ping().Result()
-		if err != nil {
-			log.Panic(err)
-		}
-	*/
 	var err error
 	log.Printf("Initializing Bot...")
 
@@ -183,36 +113,3 @@ func main() {
 		time.Sleep(1 * time.Second)
 	}
 }
-
-/*
-func main() {
-	var updates tgbotapi.UpdatesChannel
-
-	log.Print("Start pooling")
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates, _ = bot.GetUpdatesChan(u)
-
-	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
-
-		log.Printf("%s %s: %s", update.Message.From.FirstName, update.Message.From.LastName, update.Message.Text)
-
-		switch update.Message.Command() {
-		case "start":
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Blinkload Telegram 客服助手")
-			msg.ParseMode = "Markdown"
-			bot.Send(msg)
-		}
-
-		if contains(config.Get("admins").([]interface{}), int64(update.Message.From.ID)) {
-			// replyToUser(&update)
-		}
-
-	}
-}
-*/
