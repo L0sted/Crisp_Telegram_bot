@@ -12,7 +12,7 @@ Will Support:
 
 ## Getting Started
 
-1. Get your crisp API credentials from [Crisp API token generator](https://go.crisp.chat/account/token/)
+1. Get your crisp API credentials from [Crisp API token generator](https://go.crisp.chat/account/token/) FIXME
 1. Create a bot with [BotFather](https://t.me/botfather), save the token for later use.
 1. Build & Run.
 
