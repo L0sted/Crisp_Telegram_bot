@@ -8,15 +8,15 @@ import (
 	"time"
 
 	"github.com/crisp-im/go-crisp-api/crisp"
-	"github.com/go-redis/redis"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/spf13/viper"
 	"github.com/l0sted/Crisp_Telegram_bot/utils"
+	"github.com/spf13/viper"
 )
 
 var bot *tgbotapi.BotAPI
 var client *crisp.Client
-var redisClient *redis.Client
+
+// var redisClient *redis.Client
 var config *viper.Viper
 
 // CrispMessageInfo stores the original message
@@ -35,6 +35,7 @@ func (s *CrispMessageInfo) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, s)
 }
 
+/*
 func contains(s []interface{}, e int64) bool {
 	for _, a := range s {
 		if int64(a.(int)) == e {
@@ -43,6 +44,8 @@ func contains(s []interface{}, e int64) bool {
 	}
 	return false
 }
+*/
+/*
 //from tg to crisp
 func replyToUser(update *tgbotapi.Update) {
 	if update.Message.ReplyToMessage == nil {
@@ -51,7 +54,7 @@ func replyToUser(update *tgbotapi.Update) {
 		return
 	}
 
-	res, err := redisClient.Get(strconv.Itoa(update.Message.ReplyToMessage.MessageID)).Result()
+	// res, err := redisClient.Get(strconv.Itoa(update.Message.ReplyToMessage.MessageID)).Result()
 
 	if err != nil {
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "ERROR: "+err.Error())
@@ -80,40 +83,44 @@ func replyToUser(update *tgbotapi.Update) {
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "回复成功！")
 	bot.Send(msg)
 }
+*/
 //from crisp to tg
 func sendMsgToAdmins(text string, WebsiteID string, SessionID string) {
 	for _, id := range config.Get("admins").([]interface{}) {
 		msg := tgbotapi.NewMessage(int64(id.(int)), text)
 		msg.ParseMode = "Markdown"
 		sent, _ := bot.Send(msg)
-
-		redisClient.Set(strconv.Itoa(sent.MessageID), &CrispMessageInfo{
-			WebsiteID,
-			SessionID,
-		}, 12*time.Hour)
+		log.Println(strconv.Itoa(sent.MessageID))
+		/*
+			redisClient.Set(strconv.Itoa(sent.MessageID), &CrispMessageInfo{
+				WebsiteID,
+				SessionID,
+			}, 12*time.Hour)
+		*/
 	}
 }
 
-func init() {
+func main() {
 	config = utils.GetConfig()
-	
+
 	var chat_prefix = config.GetString("prefix")
 
 	log.Printf("Initializing Redis...")
+	/*
+		redisClient = redis.NewClient(&redis.Options{
+			Addr:     config.GetString("redis.host"),
+			Password: config.GetString("redis.password"),
+			DB:       config.GetInt("redis.db"),
+		})
 
-	redisClient = redis.NewClient(&redis.Options{
-		Addr:     config.GetString("redis.host"),
-		Password: config.GetString("redis.password"),
-		DB:       config.GetInt("redis.db"),
-	})
+		var err error
 
+		_, err = redisClient.Ping().Result()
+		if err != nil {
+			log.Panic(err)
+		}
+	*/
 	var err error
-
-	_, err = redisClient.Ping().Result()
-	if err != nil {
-		log.Panic(err)
-	}
-
 	log.Printf("Initializing Bot...")
 
 	bot, err = tgbotapi.NewBotAPI(config.GetString("telegram.key"))
@@ -171,12 +178,17 @@ func init() {
 			log.Fatal("Crisp listener error, check your API key or internet connection?")
 		},
 	)
+	for {
+		time.Sleep(1 * time.Second)
+	}
 }
 
+/*
 func main() {
 	var updates tgbotapi.UpdatesChannel
 
 	log.Print("Start pooling")
+
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
@@ -199,5 +211,7 @@ func main() {
 		if contains(config.Get("admins").([]interface{}), int64(update.Message.From.ID)) {
 			// replyToUser(&update)
 		}
+
 	}
 }
+*/
